@@ -1,6 +1,4 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -59,16 +57,6 @@ DISABLE_UPDATE_PROMPT="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    git
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-    zsh-z
-    fzf
-)
-
-source $ZSH/oh-my-zsh.sh
-
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -83,7 +71,7 @@ alias vim=nvim
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'
 alias cmatrix='cmatrix -C blue'
-alias update='sudo pacman -Syyu; yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq)'
+alias update='yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq)'
 alias diff='delta'
 alias delta='delta'
 
@@ -113,7 +101,7 @@ man() {
     command man "$@"
 }
 
-alias cat=bat
+# alias cat=bat
 
 export PATH="$PATH:$HOME/go/bin"
 
@@ -121,7 +109,6 @@ export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s"
 export LESS='-R '
 alias make=colormake
 alias ping=prettyping
-alias neofetch='python ~/.local/bin/neofetch.py'
 
 alias comcpp=''
 alias compy=''
@@ -129,3 +116,12 @@ alias compy=''
 alias minecraft='java -jar ~/.local/bin/TLauncher-2.75.jar'
 
 alias sudo='nocorrect sudo -E '
+
+source /usr/share/zsh/plugins/zsh-z/zsh-z.plugin.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+alias backup='pacman -Qet > backup.txt'
+alias '..'='cd ..'
+
+export ANDROID_NDK_ROOT="/opt/android-ndk"
+alias neofetch='python ~/.config/neofetch/neofetch.py'
