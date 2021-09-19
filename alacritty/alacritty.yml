@@ -2,6 +2,8 @@ import:
   - ~/.config/alacritty/font.yml
 import:
   - ~/.config/alacritty/cursor.yml
+import:
+  - ~/.config/alacritty/themes/One-Dark.yml
 
 
 draw_bold_text_with_bright_colors: true
