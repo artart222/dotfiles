@@ -1,4 +1,5 @@
-return require('packer').startup(function()
+local use = require('packer').use
+return require('packer').startup({function()
   use { 'wbthomason/packer.nvim' }
 
   -- Color schemes.
@@ -31,7 +32,7 @@ return require('packer').startup(function()
   use { 'hoob3rt/lualine.nvim' }
 
   -- TreeSitter.
-  use { 'nvim-treesitter/nvim-treesitter' }
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   -- Colorizer (for highlighting color codes).
   use { 'norcalli/nvim-colorizer.lua' }
@@ -45,8 +46,9 @@ return require('packer').startup(function()
   use { 'nvim-lua/popup.nvim' }
   use { 'nvim-lua/plenary.nvim' }
 
-  -- LSP and completion.
+  -- LSP, LSP installer and tab completion.
   use { 'neovim/nvim-lspconfig' }
+  use { 'kabouzeid/nvim-lspinstall' }
   use { 'hrsh7th/nvim-compe' }
 
   -- LSP signature.
@@ -113,6 +115,9 @@ return require('packer').startup(function()
   -- match-up is a plugin that lets you highlight, navigate, and operate on sets of matching text.
   use { 'andymass/vim-matchup' }
 
+  -- With this plugin you can resize Neovim buffers easily.
+  use { 'artart222/vim-resize' }
+
   -- Import settings of plugins or start plugins.
   require('plugins/dashboard')
   require('plugins/indent-blankline')
@@ -124,16 +129,26 @@ return require('packer').startup(function()
   require('plugins/colorize')
   require('plugins/lspkind')
   require('plugins/compe')
-  -- require('lsp_signature').setup()
+  require('lsp_signature').setup()
   require('plugins/toggleterm')
   require('gitsigns').setup()
   require('nvim-autopairs').setup()
   require('neoscroll').setup()
-  vim.cmd('highlight ScrollView ctermbg=160 guibg=LightCyan') -- Set scrollbar color to LightCyan
+  require('plugins/nvim-scroll')
   require('plugins/markdown')
   require('plugins/ranger')
   require('plugins/todo-comments')
   require("which-key").setup()
   require('mkdir')
   require('plugins/telescope')
-end )
+  require('kommentary.config')
+  vim.api.nvim_set_keymap("n", "ct", "<Plug>kommentary_line_default", {})
+  vim.api.nvim_set_keymap("v", "ct", "<Plug>kommentary_visual_default<C-c>", {})
+end,
+config = {
+  display = {
+    open_fn = function()
+      return require('packer.util').float({ border = 'single' })
+    end
+  }
+}})
