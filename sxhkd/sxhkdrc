@@ -6,6 +6,10 @@
 super + Return
 	alacritty
 
+# Browser
+super + b
+	firefox
+
 # program launcher
 super + @space
 	rofi -show drun
