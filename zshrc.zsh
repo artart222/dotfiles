@@ -4,13 +4,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/artin/.oh-my-zsh"
+export ZSH="~/.oh-my-zsh"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
 # Set list of themes to pick from when loading at random
@@ -67,7 +62,6 @@ export ARCHFLAGS="-arch x86_64"
 alias ls=lsd
 alias vim=nvim
 # alias diff='diff --color=auto'
-# Change diff to delta
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'
 alias cmatrix='cmatrix -C blue'
@@ -120,7 +114,7 @@ alias sudo='nocorrect sudo -E '
 source /usr/share/zsh/plugins/zsh-z/zsh-z.plugin.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-alias backup='pacman -Qet > backup.txt'
+alias backup='pacman -Qe > backup.txt'
 alias '..'='cd ..'
 
 export ANDROID_NDK_ROOT="/opt/android-ndk"
