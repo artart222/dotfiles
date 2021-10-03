@@ -65,7 +65,7 @@ alias vim=nvim
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'
 alias cmatrix='cmatrix -C blue'
-alias update='yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq)'
+alias update='yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq); yay -Sc'
 alias diff='delta'
 alias delta='delta'
 
@@ -119,3 +119,8 @@ alias '..'='cd ..'
 
 export ANDROID_NDK_ROOT="/opt/android-ndk"
 alias neofetch='python ~/.config/neofetch/neofetch.py'
+
+autoload -U compinit
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+compinit
