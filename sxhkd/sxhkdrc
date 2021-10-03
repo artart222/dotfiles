@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + Return
-	alacritty
+	kitty
 
 # Browser
 super + b
@@ -23,7 +23,7 @@ super + Escape
 #
 
 # quit/restart bspwm
-super + alt + {q,r}
+ctrl + alt + {q,r}
 	bspc {quit,wm -r}
 
 # close and kill
@@ -60,7 +60,7 @@ super + ctrl + {m,x,y,z}
 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
+ 	bspc node -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
@@ -84,10 +84,9 @@ super + {o,i}
 	bspc node {older,newer} -f; \
 	bspc wm -h on
 
-# focus or send to the given desktop
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
-
+#
 #
 # preselect
 #
@@ -135,3 +134,12 @@ XF86Audio{Raise,Lower}Volume
 
 XF86AudioMute
 	pulsemixer --toggle-mute
+
+XF86KbdBrightness{Up,Down}
+	sudo bash ~/kbd-light.sh {Up,Down}
+
+super + shift
+	bash ~/kbd-layout.sh
+
+shift + space
+	bash ~/layout.sh
