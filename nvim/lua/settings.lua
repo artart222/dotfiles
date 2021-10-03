@@ -79,3 +79,13 @@ cmd
     autocmd FileType help :set number
   augroup END
 ]]
+
+-- Disable cursorline in unactive buffers.
+vim.cmd
+[[
+augroup cursorline
+    autocmd!
+    autocmd WinEnter,BufEnter * set cursorline
+    autocmd WinLeave,BufLeave * set nocursorline
+augroup END
+]]
