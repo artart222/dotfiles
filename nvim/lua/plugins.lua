@@ -142,8 +142,6 @@ return require('packer').startup({function()
   require('mkdir')
   require('plugins/telescope')
   require('kommentary.config')
-  vim.api.nvim_set_keymap("n", "ct", "<Plug>kommentary_line_default", {})
-  vim.api.nvim_set_keymap("v", "ct", "<Plug>kommentary_visual_default<C-c>", {})
 end,
 config = {
   display = {
