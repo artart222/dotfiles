@@ -2,7 +2,7 @@
 local g = vim.g
 
 g.nvim_tree_side = "left" -- set nvim-tree to left side.
-g.nvim_tree_width = 25 -- Set width's of nvim-tree.
+g.nvim_tree_width = "20%"
 g.nvim_tree_ignore = {".git", "node_modules", ".cache", "__pycache__"} -- Ignore these types in listing.
 g.nvim_tree_gitignore = 1 -- Enable gitignore.
 g.nvim_tree_auto_ignore_ft = {"dashboard"} -- Don't open tree on specific fiypes.
@@ -29,6 +29,10 @@ g.nvim_tree_allow_resize = 1 -- Will resize the tree to its saved width when ope
 g.nvim_tree_add_trailing = 0 -- Append a trailing slash to folder names.
 g.nvim_tree_update_cwd = 1 -- will update the tree cwd when changing nvim's directory (DirChanged event).
 
-
 -- Hide statusline in nvim-tree buffer/tabs.
 vim.cmd [[au BufEnter,BufWinEnter,WinEnter,CmdwinEnter * if bufname('%') == "NvimTree" | set laststatus=0 | else | set laststatus=2 | endif]]
+
+require'nvim-tree'.setup {
+  lsp_diagnostics = true,
+
+}
