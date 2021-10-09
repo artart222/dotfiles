@@ -136,10 +136,10 @@ XF86AudioMute
 	pulsemixer --toggle-mute
 
 XF86KbdBrightness{Up,Down}
-	sudo bash ~/kbd-light.sh {Up,Down}
+	sudo bash ~/dotfiles/scripts/kbd-light.sh {Up,Down}
 
 super + shift
-	bash ~/kbd-layout.sh
+	bash ~/dotfiles/scripts/kbd-layout.sh
 
 shift + space
-	bash ~/layout.sh
+	bash ~/dotfiles/scripts/layout.sh
