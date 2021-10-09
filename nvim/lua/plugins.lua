@@ -8,6 +8,7 @@ return require('packer').startup({function()
   use { 'bluz71/vim-moonfly-colors' }
   use { 'shaunsingh/nord.nvim' }
   use { 'navarasu/onedark.nvim' }
+  use { 'wuelnerdotexe/vim-enfocado' }
 
   -- TrueZen.nvim is a Neovim plugin that aims to provide a cleaner and less cluttered interface
   -- when toggled in either of it's three different modes (Ataraxis, Minimalist and Focus).
@@ -49,6 +50,7 @@ return require('packer').startup({function()
   -- LSP, LSP installer and tab completion.
   use { 'neovim/nvim-lspconfig' }
   use { 'kabouzeid/nvim-lspinstall' }
+  use { 'glepnir/lspsaga.nvim' }
   use { 'hrsh7th/nvim-compe' }
 
   -- LSP signature.
@@ -128,6 +130,7 @@ return require('packer').startup({function()
   require('plugins/treesitter')
   require('plugins/colorize')
   require('plugins/lspkind')
+  require('plugins/lsp-saga')
   require('plugins/compe')
   require('lsp_signature').setup()
   require('plugins/toggleterm')
