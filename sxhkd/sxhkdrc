@@ -12,7 +12,7 @@ super + b
 
 # program launcher
 super + @space
-	rofi -show drun
+	bash ~/.config/rofi/launchers/ribbon/launcher.sh
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -126,7 +126,7 @@ super + {Left,Down,Up,Right}
 
 #Brightness control
 XF86MonBrightness{Up,Down}
-	brightnessctl s 10{+,-}
+	sudo brightnessctl s 10{+,-}
 
 # Changing the Volume
 XF86Audio{Raise,Lower}Volume
