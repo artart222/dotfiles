@@ -102,7 +102,6 @@ export PATH="$PATH:$HOME/go/bin"
 export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s"
 export LESS='-R '
 alias make=colormake
-alias ping=prettyping
 
 alias comcpp=''
 alias compy=''
@@ -138,4 +137,4 @@ export PYTHONSTARTUP=~/.config/python/pythonrc
 export LESSHISTFILE=$HOME/.config/less/lesshst
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+[[ ! -f ~/.config/zsh/p10k.zsh ]] || source ~/.config/zsh/p10k.zsh
