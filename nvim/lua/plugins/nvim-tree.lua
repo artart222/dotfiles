@@ -33,6 +33,13 @@ g.nvim_tree_update_cwd = 1 -- will update the tree cwd when changing nvim's dire
 vim.cmd [[au BufEnter,BufWinEnter,WinEnter,CmdwinEnter * if bufname('%') == "NvimTree" | set laststatus=0 | else | set laststatus=2 | endif]]
 
 require'nvim-tree'.setup {
-  lsp_diagnostics = true,
-
+  diagnostics = {
+    enable = true,
+    icons = {
+      hint = "",
+      info = "",
+      warning = "",
+      error = "",
+    }
+  },
 }
