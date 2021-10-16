@@ -12,6 +12,11 @@ bspc config borderless_monocle    true
 bspc config gapless_monocle       true
 bspc config focus_follows_pointer true
 
+bspc rule -a discord desktop=10 follow=off state=tiled
+bspc rule -a Skype desktop=10 follow=off state=tiled
+bspc rule -a droidcam desktop=10 follow=off state=tiled
+bspc rule -a Spotify desktop=10 follow=off state=tiled
+
 sxhkd&
 picom&
 feh --bg-scale --random --no-fehbg ~/Pictures/wallpapers&
