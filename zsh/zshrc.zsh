@@ -61,12 +61,12 @@ export ARCHFLAGS="-arch x86_64"
 
 alias ls=lsd
 alias vim=nvim
-# alias diff='diff --color=auto'
+alias diff='diff --color=auto'
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'
 alias cmatrix='cmatrix -C blue'
 alias update='yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq); yay -Sc'
-alias diff='delta'
+# alias diff='delta'
 alias delta='delta'
 
 
