@@ -22,3 +22,4 @@ picom&
 feh --bg-scale --random --no-fehbg ~/Pictures/wallpapers&
 bash ~/.config/polybar/launch.sh --forest
 bash ~/dotfiles/scripts/layout-startup.sh
+setxkbmap -option grp:alt_shift_toggle us,ir,de &

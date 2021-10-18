@@ -138,8 +138,5 @@ XF86AudioMute
 XF86KbdBrightness{Up,Down}
 	sudo bash ~/dotfiles/scripts/kbd-light.sh {Up,Down}
 
-super + shift
-	bash ~/dotfiles/scripts/kbd-layout.sh
-
 shift + space
 	bash ~/dotfiles/scripts/layout.sh
