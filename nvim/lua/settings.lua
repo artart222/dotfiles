@@ -89,3 +89,15 @@ augroup cursorline
     autocmd WinLeave,BufLeave * set nocursorline
 augroup END
 ]]
+
+-- Auto open nvim-tree when writing (nvim .) in command line
+-- and auto open Dashboard when nothing given as argument.
+vim.cmd
+[[
+  if index(argv(), ".") >= 0
+    autocmd VimEnter * NvimTreeToggle
+    bd1
+  elseif len(argv()) == 0
+    autocmd VimEnter * Dashboard
+  endif
+]]
