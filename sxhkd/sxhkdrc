@@ -10,6 +10,9 @@ super + Return
 super + b
 	firefox
 
+super + e
+	kitty nvim
+
 # program launcher
 super + @space
 	bash ~/.config/rofi/launchers/ribbon/launcher.sh
