@@ -1,5 +1,4 @@
 from typing import List
-
 from libqtile import qtile
 from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
@@ -7,12 +6,91 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile import hook
 
+from qtile_extras import widget
+from qtile_extras.widget.decorations import RectDecoration
+
 import subprocess
 import os
 import random
 import psutil
 
+
 os.system("bash ~/dotfiles/scripts/display.sh")
+
+
+themes = {
+    "onedark" : {
+        "background": "#282c34",
+        "gray": "#979eab",
+        "green": "#98c379",
+        "red": "#e06c75",
+        "blue": "#61afef",
+        "dark_blue": "#309bff",
+        "purple": "#b16fef",
+        "orange": "#d19a66",
+        "cyan": "#56b6c2",
+        "pink": "#f96cc5",
+        "yellow": "#e5c07b",
+        "white": "#cccccc",
+    },
+    "enfocado": {
+        "background": "#181818",
+        "gray": "#3B3B3B",
+        "green": "#83C746",
+        "red": "#FF5E56",
+        "blue": "#4F9CFE",
+        "dark_blue": "#2b6CFE",
+        "purple": "#B891F5",
+        "orange": "#Fa9153",
+        "cyan": "#56D8C9",
+        "pink": "#FF81CA",
+        "yellow": "#EFC541",
+        "white": "#DEDEDE",
+    },
+    "nord": {
+        "background": "#2E3441",
+        "gray": "#3B4252",
+        "green": "#A3BE8C",
+        "red": "#BF616A",
+        "blue": "#5E81AC",
+        "dark_blue": "#1a71AC",
+        "purple": "#B48EAD",
+        "orange": "#D08770",
+        "cyan": "#88C0D0",
+        "pink": "#F48EAD",
+        "yellow": "#EBCB8B",
+        "white": "#ECEFF4",
+    },
+    "gruvbox": {
+        "background": "#282828",
+        "gray": "#3c3836",
+        "green": "#8ec07c",
+        "red": "#cc241d",
+        "blue": "#458588",
+        "dark_blue": "#157588",
+        "purple": "#b16286",
+        "orange": "#d79921",
+        "cyan": "#83a598",
+        "pink": "#d3869b",
+        "yellow": "#DF9000",
+        "white": "#ebdbb2",
+    },
+    "catpuccino": {
+        "background": "#161321",
+        "gray": "#6E6C7E",
+        "green": "#ABE9B3",
+        "red": "#F28FAD",
+        "blue": "#96CDFB",
+        "dark_blue": "#76BDFB",
+        "purple": "#B891F5",
+        "orange": "#F8BD96",
+        "cyan": "#B5E8E0",
+        "pink" :"#DDB6F2",
+        "yellow": "#FAE3B0",
+        "white": "#D9E0EE",
+    }
+}
+
 
 @hook.subscribe.startup_once
 def autostart():
@@ -87,7 +165,16 @@ def set_battery_icon():
             icon = ""
         elif percent > 0 and percent < 10:
             icon = ""
-    return str(percent) + "% " + icon + " "
+    return  icon + " " + str(percent)
+
+def get_brightness_level():
+    result = subprocess.run(['brightnessctl', 'g'], stdout=subprocess.PIPE)
+    result = result.stdout.decode('utf-8')
+    result = int(result)
+    result = round((100 * result) / 255)
+    result = str(result)
+    result.strip()
+    return " " + result
 
 
 mod = "mod4" # mod4 is Windows/Super key
@@ -217,10 +304,10 @@ keys = [
     ),
 
     Key([], "XF86MonBrightnessUp",
-        lazy.spawn("brightnessctl s 10+")
+        lazy.spawn("brightnessctl s 5%+")
     ),
     Key([], "XF86MonBrightnessDown",
-        lazy.spawn("brightnessctl s 10-")
+        lazy.spawn("brightnessctl s 5%-")
     ),
     Key([], "XF86AudioRaiseVolume",
         lazy.spawn("pulsemixer  --change-volume +5")
@@ -299,85 +386,83 @@ wallpapers_list.remove("README.md")
 wallpapers_list.remove(".git")
 
 
+widget_defaults = dict(
+    font="JetBrainsMono Nerd Font",
+    fontsize = 14,
+    padding = 8,
+)
+
+theme = themes["enfocado"]
+
+
 screens = [
     Screen(
         wallpaper="~/Pictures/wallpapers/{}".format(wallpapers_list[random.randint(0, len(wallpapers_list))]),
         wallpaper_mode = "fill",
         top=bar.Bar(
             [
-                widget.TextBox(
-                    fmt=" ",
-                    foreground="#42a5f5",
-                    fontsize=14,
-                    font="caskaydiacove nerd font",
-                ),
+                # Workspaces and spacer
                 widget.GroupBox(),
-                widget.Prompt(),
                 widget.Spacer(),
-                widget.WindowName(
-                    format="{name}",
-                    parse_text=fix_firefox_name,
-                ),
-                widget.DF(
-                    partition="/",
-                    visible_on_warn=False,
-                    format="{uf}{m}b  ",
-                    font="caskaydiacove nerd font",
-                    foreground="#ba68c8",
-                    fontsize=14,
-                ),
-                widget.CPU(
-                    format="{load_percent}% ﬙",
-                    fontsize=14,
-                    foreground="#ec407a",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")}
-                ),
-                widget.Memory(
-                    format="{memused: .0f}{mm}ib  ",
-                    fontsize=14,
-                    foreground="#fbc02d",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")}
-                ),
-                widget.Net(
-                    format="{down}  ",
-                    fontsize=14,
-                    foreground="#61c766",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e nmtui")}
-                ),
-                widget.PulseVolume(
-                    update_interval=0.1,
-                    foreground="#6c77bb",
-                    font="caskaydiacove nerd font",
-                    fontsize=14,
-                ),
-                widget.TextBox(
-                    fmt=" ",
-                    foreground="#6c77bb",
-                    font="caskaydiacove nerd font",
-                    fontsize=14,
-                ),
+                # Updates
                 widget.CheckUpdates(
-                    display_format="{updates}  ",
-                    no_update_string="0  ",
-                    fontsize=14,
+                    **widget_defaults,
+                    display_format=" {updates} updates",
+                    no_update_string=" 0 updates",
                     update_interval=60,
                     custom_command='checkupdates',
-                    # distro='Arch_yay',
-                    colour_no_updates="#fdd835",
-                    colour_have_updates="#fdd835",
-                    font="caskaydiacove nerd font",
+                    colour_no_updates=theme["green"],
+                    colour_have_updates=theme["green"],
                     mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")}
                 ),
-                # battery
+                # Battery
                 widget.GenPollText(
+                    **widget_defaults,
                     update_interval=1,
                     func=lambda: set_battery_icon(),
-                    foreground="#ec7875",
-                    fontsize=14,
-                    font="caskaydiacove nerd font",
+                    foreground= theme["blue"],
+                ),
+                # CPU
+                widget.TextBox(
+                    **widget_defaults,
+                    fmt="CPU",
+                    decorations = [
+                        RectDecoration(colour=theme["green"], radius=0, filled=True, padding_y=5)
+                    ]
+                ),
+                widget.CPU(
+                    **widget_defaults,
+                    format="{load_percent}",
+                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")},
+                    decorations = [
+                        RectDecoration(colour=theme["gray"], radius=0, filled=True, padding_y=5)
+                    ]
+                ),
+
+                # Screen brightness
+                widget.GenPollText(
+                    **widget_defaults,
+                    update_interval=1,
+                    func=lambda: get_brightness_level(),
+                    foreground= theme["red"],
+                ),
+
+                widget.Memory(
+                    **widget_defaults,
+                    format = "{MemUsed: .0f}{mm}M",
+                    foreground=theme["cyan"],
+                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")}
+                ),
+
+                widget.TextBox(
+                    **widget_defaults,
+                    fmt="",
+                    foreground=theme["purple"],
+                ),
+                widget.PulseVolume(
+                    **widget_defaults,
+                    update_interval=0.1,
+                    foreground=theme["purple"],
                 ),
 # setxkbmap -query | grep "layout:\s" | awk '{print $2}'
                 # widget.genpolltext(
@@ -386,116 +471,26 @@ screens = [
                 #     foreground="#ec7875",
                 #     fontsize=14,
                 # ),
+                widget.TextBox(
+                    **widget_defaults,
+                    fmt="",
+                    decorations = [
+                        RectDecoration(colour=theme["dark_blue"], radius=0, filled=True, padding_y=5)
+                    ]
+                ),
                 widget.Clock(
-                    format="%H:%M %p  ",
-                    fontsize=14,
-                    foreground="#42a5f5",
-                    font="caskaydiacove nerd font",
+                    **widget_defaults,
+                    format="%H:%M %p",
+                    decorations = [
+                        RectDecoration(colour=theme["blue"], radius=0, filled=True, padding_y=5)
+                    ]
                 ),
                 widget.Systray(),
             ],
             28,
             opacity=0.8,
-            margin=3,
-        ),
-    ),
-    Screen(
-        wallpaper="~/Pictures/wallpapers/{}".format(wallpapers_list[random.randint(0, len(wallpapers_list))]),
-        wallpaper_mode = "fill",
-        top=bar.Bar(
-            [
-                widget.TextBox(
-                    fmt=" ",
-                    foreground="#42a5f5",
-                    fontsize=14,
-                    font="caskaydiacove nerd font",
-                ),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.Spacer(),
-                widget.WindowName(
-                    format="{name}",
-                    parse_text=fix_firefox_name,
-                ),
-                widget.DF(
-                    partition="/",
-                    visible_on_warn=False,
-                    format="{uf}{m}b  ",
-                    font="caskaydiacove nerd font",
-                    foreground="#ba68c8",
-                    fontsize=14,
-                ),
-                widget.CPU(
-                    format="{load_percent}% ﬙",
-                    fontsize=14,
-                    foreground="#ec407a",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")}
-                ),
-                widget.Memory(
-                    format="{memused: .0f}{mm}ib  ",
-                    fontsize=14,
-                    foreground="#fbc02d",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e htop")}
-                ),
-                widget.Net(
-                    format="{down}  ",
-                    fontsize=14,
-                    foreground="#61c766",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("kitty -e nmtui")}
-                ),
-                widget.PulseVolume(
-                    update_interval=0.1,
-                    foreground="#6c77bb",
-                    font="caskaydiacove nerd font",
-                    fontsize=14,
-                ),
-                widget.TextBox(
-                    fmt=" ",
-                    foreground="#6c77bb",
-                    font="caskaydiacove nerd font",
-                    fontsize=14,
-                ),
-                widget.CheckUpdates(
-                    display_format="{updates}  ",
-                    no_update_string="0  ",
-                    fontsize=14,
-                    update_interval=60,
-                    custom_command='checkupdates',
-                    # distro='Arch_yay',
-                    colour_no_updates="#fdd835",
-                    colour_have_updates="#fdd835",
-                    font="caskaydiacove nerd font",
-                    mouse_callbacks = {"button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")}
-                ),
-                # battery
-                widget.GenPollText(
-                    update_interval=1,
-                    func=lambda: set_battery_icon(),
-                    foreground="#ec7875",
-                    fontsize=14,
-                    font="caskaydiacove nerd font",
-                ),
-# setxkbmap -query | grep "layout:\s" | awk '{print $2}'
-                # widget.genpolltext(
-                #     update_interval=1,
-                #     func=lambda: set_battery_icon(),
-                #     foreground="#ec7875",
-                #     fontsize=14,
-                # ),
-                widget.Clock(
-                    format="%H:%M %p  ",
-                    fontsize=14,
-                    foreground="#42a5f5",
-                    font="caskaydiacove nerd font",
-                ),
-                widget.Systray(),
-            ],
-            28,
-            opacity=0.8,
-            margin=3,
+            margin=4,
+            background = theme["background"],
         ),
     ),
 ]
