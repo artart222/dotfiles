@@ -3,3 +3,4 @@ ranger/plugins/__pycache__/
 ranger/__pycache__/
 zsh/.zcompdump
 zsh/histfile
+qtile/__pycache__/
