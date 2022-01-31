@@ -32,7 +32,7 @@ alias vim=nvim
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'
 alias cmatrix='cmatrix -C blue'
-alias update='yay -Syyu; sudo pacman -Rsn $(pacman -Qdtq); yay -Sc'
+alias update='yay -Syyu --noconfirm; sudo pacman -Rsn $(pacman -Qdtq) --noconfirm; yay -Sc --noconfirm'
 alias delta='delta'
 export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s"
 export LESS='-R '
