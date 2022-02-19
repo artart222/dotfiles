@@ -108,9 +108,6 @@ def client_new(client):
     if client.name == "Skype":
         client.togroup("0")
 
-def fix_firefox_name(text):
-    return text.split("— ")[-1]
-
 def set_battery_icon():
     battery = psutil.sensors_battery()
     percent = int(battery.percent)
@@ -138,7 +135,7 @@ def set_battery_icon():
             icon = ""
         elif percent > 9 and percent < 20:
             icon = ""
-        elif percent > 0 and percent < 10:
+        elif percent >= 0 and percent < 10:
             icon = ""
     else:
         if percent == 100:
@@ -161,7 +158,7 @@ def set_battery_icon():
             icon = ""
         elif percent > 9 and percent < 20:
             icon = ""
-        elif percent > 0 and percent < 10:
+        elif percent >= 0 and percent < 10:
             icon = ""
     return icon + " " + str(percent)
 
@@ -379,9 +376,14 @@ for i in groups:
     ])
 
 
+theme = themes["enfocado"]
+
+
 layouts = [
-    layout.Columns(border_focus_stack=[
-                   "#d75f5f", "#8f3d3d"], border_width=2, margin=8
+    layout.Columns(
+        border_focus=theme["white"],
+        border_normal =theme["background"],
+        border_width=1, margin=8
     ),
     layout.Max(),
 ]
@@ -399,13 +401,11 @@ widget_defaults = dict(
     padding=8,
 )
 
-theme = themes["enfocado"]
-
 screens = [
     Screen(
-        wallpaper="~/Pictures/wallpapers/{}".format(
-            wallpapers_list[random.randint(0, len(wallpapers_list))]
-        ),
+        # wallpaper="~/Pictures/wallpapers/{}".format(
+        #     wallpapers_list[random.randint(0, len(wallpapers_list))]
+        # ),
         wallpaper_mode="fill",
         top=bar.Bar([
             # Workspaces and spacer
@@ -437,7 +437,8 @@ screens = [
                 decorations=[
                     RectDecoration(
                         colour=theme["green"], radius=0, filled=True, padding_y=5)
-                ]
+                ],
+                foreground=theme["background"]
             ),
             widget.CPU(
                 **widget_defaults,
@@ -488,11 +489,13 @@ screens = [
                 **widget_defaults,
                 update_interval=1,
                 func=lambda: find_language(),
+                foreground=theme["background"],
                 decorations=[
                     RectDecoration(
                         colour=theme["yellow"], radius=0, filled=True, padding_y=5)
                 ]
             ),
+            widget.Spacer(length=8),
             widget.TextBox(
                 **widget_defaults,
                 fmt="",
