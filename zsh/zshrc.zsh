@@ -75,3 +75,4 @@ compinit
 
 
 source ~/dotfiles/scripts/tray.sh
+alias nv=nvim
