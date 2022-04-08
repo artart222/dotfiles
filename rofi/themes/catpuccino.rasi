@@ -9,3 +9,5 @@
     grey: #6E6C7E;
     width: 600;
 }
+
+@import "../config.rasi"

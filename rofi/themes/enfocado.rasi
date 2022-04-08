@@ -10,3 +10,4 @@
     width: 600;
 }
 
+@import "../config.rasi"

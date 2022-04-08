@@ -56,6 +56,7 @@ import subprocess
 import os
 from typing import List
 import psutil
+import random
 
 from libqtile import qtile
 from libqtile import bar, layout
@@ -140,7 +141,7 @@ themes = {
 }
 
 
-os.system("bash ~/dotfiles/scripts/display.sh")
+os.system("bash ~/dotfiles/qtile/display.sh")
 
 # Auto starting some programs
 @hook.subscribe.startup_once
@@ -246,6 +247,9 @@ mod = "mod4"  # mod4 is Windows/Super key
 terminal = "kitty"
 user_home = os.path.expanduser("~")
 
+theme_name = "enfocado"
+theme = themes[theme_name]
+
 
 keys = [
     # Switch between windows
@@ -294,7 +298,12 @@ keys = [
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "space", lazy.spawn("rofi -show drun"), desc="Open rofi as app menu."),
+    Key(
+        [mod],
+        "space",
+        lazy.spawn("rofi -theme {} -show drun".format(theme_name)),
+        desc="Open rofi as app menu.",
+    ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 5%-")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("pulsemixer  --change-volume +5")),
@@ -365,9 +374,6 @@ for i in groups:
     )
 
 
-theme = themes["enfocado"]
-
-
 layouts = [
     layout.Columns(
         border_focus=theme["white"],
@@ -391,136 +397,137 @@ widget_defaults = dict(
     padding=8,
 )
 
+qtile_bar = bar.Bar(
+    [
+        # Workspaces and spacer
+        widget.GroupBox(),
+        widget.Spacer(),
+        # Updates
+        widget.CheckUpdates(
+            **widget_defaults,
+            display_format=" {updates} updates",
+            no_update_string=" 0 updates",
+            update_interval=60,
+            custom_command="checkupdates",
+            colour_no_updates=theme["green"],
+            colour_have_updates=theme["green"],
+            mouse_callbacks={
+                "button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")
+            },
+        ),
+        # Battery
+        widget.GenPollText(
+            **widget_defaults,
+            update_interval=1,
+            func=set_battery_icon(),
+            foreground=theme["blue"],
+        ),
+        # CPU
+        widget.TextBox(
+            **widget_defaults,
+            fmt="CPU",
+            decorations=[
+                RectDecoration(
+                    colour=theme["green"], radius=0, filled=True, padding_y=5
+                )
+            ],
+            foreground=theme["background"],
+        ),
+        widget.CPU(
+            **widget_defaults,
+            format="{load_percent}",
+            mouse_callbacks={"button1": lambda: qtile.cmd_spawn("kitty -e htop")},
+            decorations=[
+                RectDecoration(colour=theme["gray"], radius=0, filled=True, padding_y=5)
+            ],
+        ),
+        # Screen brightness
+        widget.GenPollText(
+            **widget_defaults,
+            update_interval=1,
+            func=get_brightness_level(),
+            foreground=theme["red"],
+        ),
+        widget.Memory(
+            **widget_defaults,
+            format="{MemUsed: .0f}{mm}M",
+            foreground=theme["cyan"],
+            mouse_callbacks={"button1": lambda: qtile.cmd_spawn("kitty -e htop")},
+        ),
+        widget.TextBox(
+            **widget_defaults,
+            fmt="",
+            foreground=theme["purple"],
+        ),
+        widget.PulseVolume(
+            **widget_defaults,
+            update_interval=0.1,
+            foreground=theme["purple"],
+        ),
+        widget.TextBox(
+            **widget_defaults,
+            fmt="",
+            decorations=[
+                RectDecoration(
+                    colour=theme["orange"], radius=0, filled=True, padding_y=5
+                )
+            ],
+        ),
+        widget.GenPollText(
+            **widget_defaults,
+            update_interval=1,
+            func=find_language(),
+            foreground=theme["background"],
+            decorations=[
+                RectDecoration(
+                    colour=theme["yellow"], radius=0, filled=True, padding_y=5
+                )
+            ],
+        ),
+        widget.Spacer(length=8),
+        widget.TextBox(
+            **widget_defaults,
+            fmt="",
+            decorations=[
+                RectDecoration(
+                    colour=theme["dark_blue"],
+                    radius=0,
+                    filled=True,
+                    padding_y=5,
+                )
+            ],
+        ),
+        widget.Clock(
+            **widget_defaults,
+            format="%H:%M %p",
+            decorations=[
+                RectDecoration(colour=theme["blue"], radius=0, filled=True, padding_y=5)
+            ],
+        ),
+        widget.Systray(
+            **widget_defaults,
+        ),
+    ],
+    28,
+    opacity=0.8,
+    margin=4,
+    background=theme["background"],
+)
+
 screens = [
     Screen(
-        # wallpaper="~/Pictures/wallpapers/{}".format(
-        #     wallpapers_list[random.randint(0, len(wallpapers_list))]
-        # ),
-        wallpaper_mode="fill",
-        top=bar.Bar(
-            [
-                # Workspaces and spacer
-                widget.GroupBox(),
-                widget.Spacer(),
-                # Updates
-                widget.CheckUpdates(
-                    **widget_defaults,
-                    display_format=" {updates} updates",
-                    no_update_string=" 0 updates",
-                    update_interval=60,
-                    custom_command="checkupdates",
-                    colour_no_updates=theme["green"],
-                    colour_have_updates=theme["green"],
-                    mouse_callbacks={
-                        "button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")
-                    },
-                ),
-                # Battery
-                widget.GenPollText(
-                    **widget_defaults,
-                    update_interval=1,
-                    func=lambda: set_battery_icon(),
-                    foreground=theme["blue"],
-                ),
-                # CPU
-                widget.TextBox(
-                    **widget_defaults,
-                    fmt="CPU",
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["green"], radius=0, filled=True, padding_y=5
-                        )
-                    ],
-                    foreground=theme["background"],
-                ),
-                widget.CPU(
-                    **widget_defaults,
-                    format="{load_percent}",
-                    mouse_callbacks={
-                        "button1": lambda: qtile.cmd_spawn("kitty -e htop")
-                    },
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["gray"], radius=0, filled=True, padding_y=5
-                        )
-                    ],
-                ),
-                # Screen brightness
-                widget.GenPollText(
-                    **widget_defaults,
-                    update_interval=1,
-                    func=lambda: get_brightness_level(),
-                    foreground=theme["red"],
-                ),
-                widget.Memory(
-                    **widget_defaults,
-                    format="{MemUsed: .0f}{mm}M",
-                    foreground=theme["cyan"],
-                    mouse_callbacks={
-                        "button1": lambda: qtile.cmd_spawn("kitty -e htop")
-                    },
-                ),
-                widget.TextBox(
-                    **widget_defaults,
-                    fmt="",
-                    foreground=theme["purple"],
-                ),
-                widget.PulseVolume(
-                    **widget_defaults,
-                    update_interval=0.1,
-                    foreground=theme["purple"],
-                ),
-                widget.TextBox(
-                    **widget_defaults,
-                    fmt="",
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["orange"], radius=0, filled=True, padding_y=5
-                        )
-                    ],
-                ),
-                widget.GenPollText(
-                    **widget_defaults,
-                    update_interval=1,
-                    func=lambda: find_language(),
-                    foreground=theme["background"],
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["yellow"], radius=0, filled=True, padding_y=5
-                        )
-                    ],
-                ),
-                widget.Spacer(length=8),
-                widget.TextBox(
-                    **widget_defaults,
-                    fmt="",
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["dark_blue"],
-                            radius=0,
-                            filled=True,
-                            padding_y=5,
-                        )
-                    ],
-                ),
-                widget.Clock(
-                    **widget_defaults,
-                    format="%H:%M %p",
-                    decorations=[
-                        RectDecoration(
-                            colour=theme["blue"], radius=0, filled=True, padding_y=5
-                        )
-                    ],
-                ),
-                widget.Systray(
-                    **widget_defaults,
-                ),
-            ],
-            28,
-            opacity=0.8,
-            margin=4,
-            background=theme["background"],
+        wallpaper="~/Pictures/wallpapers/{}".format(
+            wallpapers_list[random.randint(0, len(wallpapers_list))]
         ),
+        wallpaper_mode="fill",
+        top=qtile_bar,
+    ),
+    Screen(
+        wallpaper="~/Pictures/wallpapers/{}".format(
+            wallpapers_list[random.randint(0, len(wallpapers_list))]
+        ),
+        wallpaper_mode="fill",
+        top=qtile_bar,
     ),
 ]
 

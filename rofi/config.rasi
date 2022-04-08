@@ -11,8 +11,6 @@ configuration{
     display-drun: "   Apps ";
 }
 
-@theme "themes/enfocado"
-
 element-text, element-icon , mode-switcher {
     background-color: inherit;
     text-color:       inherit;
