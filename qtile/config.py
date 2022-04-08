@@ -243,12 +243,27 @@ def find_language():
     return result
 
 
+def find_theme():
+    with open("/home/artin/.config/qtile/config.txt", "r") as f:
+        line_number = 0
+        for line in f:
+            line_number += 1
+            if line_number == 1:
+                return line[7:].strip()
+
+
 mod = "mod4"  # mod4 is Windows/Super key
 terminal = "kitty"
 user_home = os.path.expanduser("~")
 
-theme_name = "enfocado"
+
+theme_name = find_theme()
 theme = themes[theme_name]
+os.system(
+    'sed -i "1s/.*/"\'include themes\\/{}\'.conf"/" ~/.config/kitty/kitty.conf'.format(
+        theme_name
+    )
+)
 
 
 keys = [
