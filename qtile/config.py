@@ -434,7 +434,7 @@ qtile_bar = bar.Bar(
         widget.GenPollText(
             **widget_defaults,
             update_interval=1,
-            func=set_battery_icon(),
+            func=set_battery_icon,
             foreground=theme["blue"],
         ),
         # CPU
@@ -460,7 +460,7 @@ qtile_bar = bar.Bar(
         widget.GenPollText(
             **widget_defaults,
             update_interval=1,
-            func=get_brightness_level(),
+            func=get_brightness_level,
             foreground=theme["red"],
         ),
         widget.Memory(
@@ -491,7 +491,7 @@ qtile_bar = bar.Bar(
         widget.GenPollText(
             **widget_defaults,
             update_interval=1,
-            func=find_language(),
+            func=find_language,
             foreground=theme["background"],
             decorations=[
                 RectDecoration(
