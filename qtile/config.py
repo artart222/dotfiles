@@ -55,8 +55,10 @@ SOFTWARE.
 import subprocess
 import os
 from typing import List
-import psutil
+import json
+import logging as log
 import random
+import psutil
 
 from libqtile import qtile
 from libqtile import bar, layout
@@ -141,23 +143,26 @@ themes = {
 }
 
 
-os.system("bash ~/dotfiles/qtile/display.sh")
+os.system("bash ~/dotfiles/qtile/scripts/display.sh")
 
-# Auto starting some programs
+
 @hook.subscribe.startup_once
 def autostart():
+    """Auto starting some programs"""
     processes = [
         ["picom"],
         ["dropbox"],
         ["skypeforlinux"],
         ["discord"],
     ]
-    for p in processes:
-        subprocess.Popen(p)
+    for process in processes:
+        with subprocess.Popen(process, stdout=subprocess.PIPE) as proc:
+            log.info(proc.stdout)
 
 
 @hook.subscribe.client_new
 def client_new(client):
+    """Moving some windows to other workspaces"""
     if client.name == "Discord":
         client.togroup("0")
     if client.name == "Skype":
@@ -165,12 +170,13 @@ def client_new(client):
 
 
 def set_battery_icon():
+    """Find best battery icon for qtile bar"""
     battery = psutil.sensors_battery()
     percent = int(battery.percent)
-    isPlugged = battery.power_plugged
+    is_pluged = battery.power_plugged
     icon = ""
 
-    if isPlugged:
+    if is_pluged:
         if percent == 100:
             icon = ""
         elif 89 < percent < 100:
@@ -220,7 +226,8 @@ def set_battery_icon():
 
 
 def get_brightness_level():
-    result = subprocess.run(["brightnessctl", "g"], stdout=subprocess.PIPE)
+    """Finding brightness level of laptop display"""
+    result = subprocess.run(["brightnessctl", "g"], stdout=subprocess.PIPE, check=True)
     result = result.stdout.decode("utf-8")
     result = int(result)
     result = round((100 * result) / 255)
@@ -231,10 +238,12 @@ def get_brightness_level():
 
 
 def find_language():
+    """Finding system keyboard language"""
     result = subprocess.run(
-        "setxkbmap -query | grep \"layout:\s\" | awk '{print $2}'",
+        "setxkbmap -query | grep \"layout:\\s\" | awk '{print $2}'",
         capture_output=True,
         shell=True,
+        check=True,
     )
     result = result.stdout.decode("utf-8")
     result = str(result)
@@ -244,12 +253,14 @@ def find_language():
 
 
 def find_theme():
-    with open("/home/artin/.config/qtile/config.txt", "r") as f:
-        line_number = 0
-        for line in f:
-            line_number += 1
-            if line_number == 1:
-                return line[7:].strip()
+    """Find system global theme from config.json file"""
+    with open(
+        f"{os.path.abspath(os.path.expanduser('~'))}/.config/qtile/config.json",
+        "r",
+        encoding="utf-8",
+    ) as inp_file:
+        configs = json.load(inp_file)
+        return configs["theme"]
 
 
 mod = "mod4"  # mod4 is Windows/Super key
@@ -260,9 +271,7 @@ user_home = os.path.expanduser("~")
 theme_name = find_theme()
 theme = themes[theme_name]
 os.system(
-    'sed -i "1s/.*/"\'include themes\\/{}\'.conf"/" ~/.config/kitty/kitty.conf'.format(
-        theme_name
-    )
+    f'sed -i "1s/.*/"\'include themes\\/{theme_name}\'.conf"/" ~/.config/kitty/kitty.conf'
 )
 
 
@@ -316,7 +325,7 @@ keys = [
     Key(
         [mod],
         "space",
-        lazy.spawn("rofi -theme {} -show drun".format(theme_name)),
+        lazy.spawn(f"rofi -theme {theme_name} -show drun"),
         desc="Open rofi as app menu.",
     ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
@@ -376,14 +385,14 @@ for i in groups:
                 [mod],
                 i.name,
                 lazy.group[i.name].toscreen(toggle=False),
-                desc="Switch to group {}".format(i.name),
+                desc=f"Switch to group {i.name}",
             ),
             # mod1 + shift + letter of group = switch to & move focused window to group
             Key(
                 [mod, "shift"],
                 i.name,
                 lazy.window.togroup(i.name, switch_group=False),
-                desc="Switch to & move focused window to group {}".format(i.name),
+                desc=f"Switch to & move focused window to group {i.name}",
             ),
         ]
     )
@@ -531,18 +540,14 @@ qtile_bar = bar.Bar(
 
 screens = [
     Screen(
-        wallpaper="~/Pictures/wallpapers/{}".format(
-            wallpapers_list[random.randint(0, len(wallpapers_list))]
-        ),
+        wallpaper=f"~/Pictures/wallpapers/{wallpapers_list[random.randint(0, len(wallpapers_list))]}",
         wallpaper_mode="fill",
         top=qtile_bar,
     ),
     Screen(
-        wallpaper="~/Pictures/wallpapers/{}".format(
-            wallpapers_list[random.randint(0, len(wallpapers_list))]
-        ),
+        wallpaper=f"~/Pictures/wallpapers/{wallpapers_list[random.randint(0, len(wallpapers_list))]}",
         wallpaper_mode="fill",
-        top=qtile_bar,
+        # top=qtile_bar,
     ),
 ]
 
