@@ -126,7 +126,7 @@ themes = {
         "yellow": "#DF9000",
         "white": "#ebdbb2",
     },
-    "catpuccino": {
+    "catppuccin": {
         "background": "#161321",
         "gray": "#6E6C7E",
         "green": "#ABE9B3",
@@ -325,7 +325,7 @@ keys = [
     Key(
         [mod],
         "space",
-        lazy.spawn(f"rofi -theme {theme_name} -show drun"),
+        lazy.spawn(f"rofi -theme ~/.config/rofi/themes/{theme_name} -show drun"),
         desc="Open rofi as app menu.",
     ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
