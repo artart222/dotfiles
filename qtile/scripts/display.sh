@@ -23,4 +23,3 @@ elif [[ $MONITORS_NUM == "2" ]]; then
       | xrandr --output HDMI-1 --mode 1920x1080 --rate 60 --right-of eDP-1 --primary
   fi
 fi
-echo $AC_ADAPTER
