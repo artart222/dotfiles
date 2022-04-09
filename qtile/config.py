@@ -336,7 +336,7 @@ keys = [
     Key(
         ["mod1"],
         "Shift_L",
-        lazy.spawn("/usr/bin/bash /home/artin/dotfiles/qtile/language.sh"),
+        lazy.spawn("/usr/bin/bash /home/artin/dotfiles/qtile/scripts/language.sh"),
     ),
     # Screenshots
     Key(
