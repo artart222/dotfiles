@@ -1,7 +1,7 @@
 # Set apps config location environmental variables
 GIT_CONFIG=$XDG_CONFIG_HOME/git/config
 GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
-XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+XAUTHORITY="$XDG_CONFIG_HOME"/Xauthority
 KDEHOME=$XDG_CONFIG_HOME/kde
 PYTHONSTARTUP=$XDG_CONFIG_HOME/python/pythonrc
 LESSHISTFILE=$XDG_CONFIG_HOME/less/lesshst
