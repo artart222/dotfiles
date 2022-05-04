@@ -56,7 +56,6 @@ import subprocess
 import os
 from typing import List
 import json
-import logging as log
 import random
 import psutil
 
@@ -143,7 +142,7 @@ themes = {
 }
 
 
-os.system("bash ~/dotfiles/qtile/scripts/display.sh")
+os.system("bash ~/.config/qtile/scripts/display.sh")
 
 
 @hook.subscribe.startup_once
@@ -152,12 +151,10 @@ def autostart():
     processes = [
         ["picom"],
         ["dropbox"],
-        ["skypeforlinux"],
         ["discord"],
     ]
     for process in processes:
-        with subprocess.Popen(process, stdout=subprocess.PIPE) as proc:
-            log.info(proc.stdout)
+        subprocess.Popen(process)
 
 
 @hook.subscribe.client_new
@@ -263,6 +260,19 @@ def find_theme():
         return configs["theme"]
 
 
+def find_network_name():
+    result = subprocess.run(
+        "nmcli device status | grep \"\\bconnected\" | cut -d' ' -f22-",
+        capture_output=True,
+        shell=True,
+        check=True,
+    )
+    result = result.stdout.decode("utf-8")
+    result = str(result)
+    result = result.strip()
+    return result
+
+
 mod = "mod4"  # mod4 is Windows/Super key
 terminal = "kitty"
 user_home = os.path.expanduser("~")
@@ -328,6 +338,25 @@ keys = [
         lazy.spawn(f"rofi -theme ~/.config/rofi/themes/{theme_name} -show drun"),
         desc="Open rofi as app menu.",
     ),
+    Key(
+        [mod],
+        "f",
+        lazy.spawn(
+            f"fd --follow --exclude=.git --hidden | rofi -theme ~/.config/rofi/themes/{theme_name}\
+                    -show file-browser-extended -file-browser-disable-status -file-browser-stdin",
+            shell=True,
+        ),
+        desc="Open rofi as file browser menu.",
+    ),
+    Key(
+        [mod],
+        "g",
+        lazy.spawn(
+            f"rofi -theme ~/.config/rofi/themes/{theme_name} -show emoji",
+            shell=True,
+        ),
+        desc="Open rofi as file browser menu.",
+    ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 5%-")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("pulsemixer  --change-volume +5")),
@@ -336,7 +365,7 @@ keys = [
     Key(
         ["mod1"],
         "Shift_L",
-        lazy.spawn("/usr/bin/bash /home/artin/dotfiles/qtile/scripts/language.sh"),
+        lazy.spawn(f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"),
     ),
     # Screenshots
     Key(
@@ -436,7 +465,7 @@ qtile_bar = bar.Bar(
             colour_no_updates=theme["green"],
             colour_have_updates=theme["green"],
             mouse_callbacks={
-                "button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")
+                "Button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")
             },
         ),
         # Battery
@@ -450,6 +479,7 @@ qtile_bar = bar.Bar(
         widget.TextBox(
             **widget_defaults,
             fmt="CPU",
+            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
             decorations=[
                 RectDecoration(
                     colour=theme["green"], radius=0, filled=True, padding_y=5
@@ -460,7 +490,7 @@ qtile_bar = bar.Bar(
         widget.CPU(
             **widget_defaults,
             format="{load_percent}",
-            mouse_callbacks={"button1": lambda: qtile.cmd_spawn("kitty -e htop")},
+            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
             decorations=[
                 RectDecoration(colour=theme["gray"], radius=0, filled=True, padding_y=5)
             ],
@@ -476,7 +506,7 @@ qtile_bar = bar.Bar(
             **widget_defaults,
             format="{MemUsed: .0f}{mm}M",
             foreground=theme["cyan"],
-            mouse_callbacks={"button1": lambda: qtile.cmd_spawn("kitty -e htop")},
+            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
         ),
         widget.TextBox(
             **widget_defaults,
@@ -490,7 +520,12 @@ qtile_bar = bar.Bar(
         ),
         widget.TextBox(
             **widget_defaults,
-            fmt="",
+            fmt=" ",
+            mouse_callbacks={
+                "Button1": lambda: qtile.cmd_spawn(
+                    f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"
+                )
+            },
             decorations=[
                 RectDecoration(
                     colour=theme["orange"], radius=0, filled=True, padding_y=5
@@ -502,12 +537,23 @@ qtile_bar = bar.Bar(
             update_interval=1,
             func=find_language,
             foreground=theme["background"],
+            mouse_callbacks={
+                "Button1": lambda: qtile.cmd_spawn(
+                    f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"
+                )
+            },
             decorations=[
                 RectDecoration(
                     colour=theme["yellow"], radius=0, filled=True, padding_y=5
                 )
             ],
         ),
+        # widget.GenPollText(
+        #     **widget_defaults,
+        #     update_interval=5,
+        #     func=find_network_name,
+        #     mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e nmtui")},
+        # ),
         widget.Spacer(length=8),
         widget.TextBox(
             **widget_defaults,
