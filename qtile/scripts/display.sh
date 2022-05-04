@@ -17,7 +17,7 @@ if [[ $MONITORS_NUM == "1" ]]; then
 elif [[ $MONITORS_NUM == "2" ]]; then
   if [[ $AC_ADAPTER == "on" ]]; then
     xrandr --output eDP-1 --mode 1920x1080 --rate 144 \
-      | xrandr --output HDMI-1 --mode 1920x1080 --rate 144 --right-of eDP-1 --primary
+      | xrandr --output HDMI-1 --mode 1920x1080 --rate 165 --right-of eDP-1 --primary
   else
     xrandr --output eDP-1 --mode 1920x1080 --rate 60 \
       | xrandr --output HDMI-1 --mode 1920x1080 --rate 60 --right-of eDP-1 --primary
