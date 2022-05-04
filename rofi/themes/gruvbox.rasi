@@ -7,7 +7,6 @@
     fg-col: #d4be98;
     fg-col2: #df736d;
     grey: #5b5e5f;
-    width: 600;
 }
 
 @import "../config.rasi"

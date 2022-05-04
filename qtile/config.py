@@ -355,7 +355,16 @@ keys = [
             f"rofi -theme ~/.config/rofi/themes/{theme_name} -show emoji",
             shell=True,
         ),
-        desc="Open rofi as file browser menu.",
+        desc="Open rofi as emoji browser menu.",
+    ),
+    Key(
+        [mod],
+        "c",
+        lazy.spawn(
+            f"rofi -theme ~/.config/rofi/themes/{theme_name} -show calc",
+            shell=True,
+        ),
+        desc="Open rofi as calculator.",
     ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 5%-")),
