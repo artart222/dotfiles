@@ -366,6 +366,15 @@ keys = [
         ),
         desc="Open rofi as calculator.",
     ),
+    Key(
+        [mod],
+        "n",
+        lazy.spawn(
+            "bash ~/.config/rofi/rofi-network-manager/rofi-network-manager.sh",
+            shell=True,
+        ),
+        desc="Open rofi as calculator.",
+    ),
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 5%-")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("pulsemixer  --change-volume +5")),
