@@ -176,5 +176,5 @@
   (calendar))
 
 (defwindow system :monitor 0 :stacking "fg" :focusable "false" :screen 1
-  :geometry (geometry :x "1%" :y "8%" :anchor "top left" :width "1%" :height "25%")
+  :geometry (geometry :x "1%" :y "8%" :anchor "top left" :width "12%" :height "25%")
   (system))
