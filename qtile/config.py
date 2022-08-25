@@ -55,7 +55,6 @@ SOFTWARE.
 import subprocess
 import os
 from typing import List
-import json
 import random
 import psutil
 
@@ -66,81 +65,8 @@ from libqtile.lazy import lazy
 from libqtile import hook
 from qtile_extras import widget
 from qtile_extras.widget.decorations import RectDecoration
-
-
-themes = {
-    "onedark": {
-        "background": "#282c34",
-        "gray": "#979eab",
-        "green": "#98c379",
-        "red": "#e06c75",
-        "blue": "#61afef",
-        "dark_blue": "#309bff",
-        "purple": "#b16fef",
-        "orange": "#d19a66",
-        "cyan": "#56b6c2",
-        "pink": "#f96cc5",
-        "yellow": "#e5c07b",
-        "white": "#cccccc",
-    },
-    "enfocado": {
-        "background": "#181818",
-        "gray": "#3B3B3B",
-        "green": "#83C746",
-        "red": "#FF5E56",
-        "blue": "#4F9CFE",
-        "dark_blue": "#2b6CFE",
-        "purple": "#B891F5",
-        "orange": "#Fa9153",
-        "cyan": "#56D8C9",
-        "pink": "#FF81CA",
-        "yellow": "#EFC541",
-        "white": "#DEDEDE",
-    },
-    "nord": {
-        "background": "#2E3441",
-        "gray": "#3B4252",
-        "green": "#A3BE8C",
-        "red": "#BF616A",
-        "blue": "#5E81AC",
-        "dark_blue": "#1a71AC",
-        "purple": "#B48EAD",
-        "orange": "#D08770",
-        "cyan": "#88C0D0",
-        "pink": "#F48EAD",
-        "yellow": "#EBCB8B",
-        "white": "#ECEFF4",
-    },
-    "gruvbox": {
-        "background": "#282828",
-        "gray": "#3c3836",
-        "green": "#8ec07c",
-        "red": "#cc241d",
-        "blue": "#458588",
-        "dark_blue": "#157588",
-        "purple": "#b16286",
-        "orange": "#d79921",
-        "cyan": "#83a598",
-        "pink": "#d3869b",
-        "yellow": "#DF9000",
-        "white": "#ebdbb2",
-    },
-    "catppuccin": {
-        "background": "#161321",
-        "gray": "#6E6C7E",
-        "green": "#ABE9B3",
-        "red": "#F28FAD",
-        "blue": "#96CDFB",
-        "dark_blue": "#76BDFB",
-        "purple": "#B891F5",
-        "orange": "#F8BD96",
-        "cyan": "#B5E8E0",
-        "pink": "#DDB6F2",
-        "yellow": "#FAE3B0",
-        "white": "#D9E0EE",
-    },
-}
-
+from screen import bar_generator
+from themes import find_theme, themes
 
 os.system("bash ~/.config/qtile/scripts/display.sh")
 
@@ -247,17 +173,6 @@ def find_language():
     result = result.strip()
 
     return result
-
-
-def find_theme():
-    """Find system global theme from config.json file"""
-    with open(
-        f"{os.path.abspath(os.path.expanduser('~'))}/.config/qtile/config.json",
-        "r",
-        encoding="utf-8",
-    ) as inp_file:
-        configs = json.load(inp_file)
-        return configs["theme"]
 
 
 def find_network_name():
@@ -468,150 +383,30 @@ widget_defaults = dict(
     padding=8,
 )
 
-qtile_bar = bar.Bar(
-    [
-        # Workspaces and spacer
-        widget.GroupBox(),
-        widget.Spacer(),
-        # Updates
-        widget.CheckUpdates(
-            **widget_defaults,
-            display_format=" {updates} updates",
-            no_update_string=" 0 updates",
-            update_interval=60,
-            custom_command="checkupdates",
-            colour_no_updates=theme["green"],
-            colour_have_updates=theme["green"],
-            mouse_callbacks={
-                "Button1": lambda: qtile.cmd_spawn("yay -Syyu --noconfirm")
-            },
-        ),
-        # Battery
-        widget.GenPollText(
-            **widget_defaults,
-            update_interval=1,
-            func=set_battery_icon,
-            foreground=theme["blue"],
-        ),
-        # CPU
-        widget.TextBox(
-            **widget_defaults,
-            fmt="CPU",
-            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
-            decorations=[
-                RectDecoration(
-                    colour=theme["green"], radius=0, filled=True, padding_y=5
-                )
-            ],
-            foreground=theme["background"],
-        ),
-        widget.CPU(
-            **widget_defaults,
-            format="{load_percent}",
-            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
-            decorations=[
-                RectDecoration(colour=theme["gray"], radius=0, filled=True, padding_y=5)
-            ],
-        ),
-        # Screen brightness
-        widget.GenPollText(
-            **widget_defaults,
-            update_interval=1,
-            func=get_brightness_level,
-            foreground=theme["red"],
-        ),
-        widget.Memory(
-            **widget_defaults,
-            format="{MemUsed: .0f}{mm}M",
-            foreground=theme["cyan"],
-            mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
-        ),
-        widget.TextBox(
-            **widget_defaults,
-            fmt="",
-            foreground=theme["purple"],
-        ),
-        widget.PulseVolume(
-            **widget_defaults,
-            update_interval=0.1,
-            foreground=theme["purple"],
-        ),
-        widget.TextBox(
-            **widget_defaults,
-            fmt=" ",
-            mouse_callbacks={
-                "Button1": lambda: qtile.cmd_spawn(
-                    f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"
-                )
-            },
-            decorations=[
-                RectDecoration(
-                    colour=theme["orange"], radius=0, filled=True, padding_y=5
-                )
-            ],
-        ),
-        widget.GenPollText(
-            **widget_defaults,
-            update_interval=1,
-            func=find_language,
-            foreground=theme["background"],
-            mouse_callbacks={
-                "Button1": lambda: qtile.cmd_spawn(
-                    f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"
-                )
-            },
-            decorations=[
-                RectDecoration(
-                    colour=theme["yellow"], radius=0, filled=True, padding_y=5
-                )
-            ],
-        ),
-        # widget.GenPollText(
-        #     **widget_defaults,
-        #     update_interval=5,
-        #     func=find_network_name,
-        #     mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e nmtui")},
-        # ),
-        widget.Spacer(length=8),
-        widget.TextBox(
-            **widget_defaults,
-            fmt="",
-            decorations=[
-                RectDecoration(
-                    colour=theme["dark_blue"],
-                    radius=0,
-                    filled=True,
-                    padding_y=5,
-                )
-            ],
-        ),
-        widget.Clock(
-            **widget_defaults,
-            format="%H:%M %p",
-            decorations=[
-                RectDecoration(colour=theme["blue"], radius=0, filled=True, padding_y=5)
-            ],
-        ),
-        widget.Systray(
-            **widget_defaults,
-        ),
-    ],
-    28,
-    opacity=0.8,
-    margin=4,
-    background=theme["background"],
-)
-
 screens = [
     Screen(
         wallpaper=f"~/Pictures/wallpapers/{wallpapers_list[random.randint(0, len(wallpapers_list))]}",
         wallpaper_mode="fill",
-        top=qtile_bar,
+        top=bar_generator(
+            theme,
+            widget_defaults,
+            user_home,
+            set_battery_icon,
+            get_brightness_level,
+            find_language,
+        ),
     ),
     Screen(
         wallpaper=f"~/Pictures/wallpapers/{wallpapers_list[random.randint(0, len(wallpapers_list))]}",
         wallpaper_mode="fill",
-        # top=qtile_bar,
+        top=bar_generator(
+            theme,
+            widget_defaults,
+            user_home,
+            set_battery_icon,
+            get_brightness_level,
+            find_language,
+        ),
     ),
 ]
 
