@@ -1,13 +1,16 @@
 configuration {
-    modi: "run,drun,window,emoji,calc,filebrowser,file-browser-extended";
+    modi: "run,drun,emoji,calc,file-browser-extended";
     font: "JetBrainsMono Nerd Font 12";
     show-icons: true;
     icon-theme: "Oranchelo";
     drun-display-format: "{icon} {name}";
-    /* location: 0; */
-    /* disable-history: false; */
     hide-scrollbar: true;
+    display-run: "   Run ";
     display-drun: "   Apps ";
+    display-emoji: "  Emoji ";
+    display-calc: "  Calculator ";
+    display-file-browser-extended: "  File Browser";
+    sidebar-mode: true;
 }
 
 element-text, element-icon , mode-switcher {
@@ -16,8 +19,8 @@ element-text, element-icon , mode-switcher {
 }
 
 window {
-    height: 40%;
-    width: 40%;
+    height: 45%;
+    width: 50%;
     border: 3px;
     border-color: @border-col;
     background-color: @bg-col;
