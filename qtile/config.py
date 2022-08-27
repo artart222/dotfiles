@@ -58,15 +58,14 @@ from typing import List
 import random
 import psutil
 
-from libqtile import qtile
-from libqtile import bar, layout
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
-from libqtile.lazy import lazy
+from libqtile import layout
+from libqtile.config import Match, Screen
 from libqtile import hook
-from qtile_extras import widget
-from qtile_extras.widget.decorations import RectDecoration
+
 from screen import bar_generator
 from themes import find_theme, themes
+from keys import groups, keys, mouse
+
 
 os.system("bash ~/.config/qtile/scripts/display.sh")
 
@@ -188,8 +187,6 @@ def find_network_name():
     return result
 
 
-mod = "mod4"  # mod4 is Windows/Super key
-terminal = "kitty"
 user_home = os.path.expanduser("~")
 
 
@@ -198,167 +195,6 @@ theme = themes[theme_name]
 os.system(
     f'sed -i "1s/.*/"\'include themes\\/{theme_name}\'.conf"/" ~/.config/kitty/kitty.conf'
 )
-
-
-keys = [
-    # Switch between windows
-    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    # Move windows between left/right columns or move up/down in current stack.
-    # Moving out of range in Columns layout will create new column.
-    Key(
-        [mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"
-    ),
-    Key(
-        [mod, "shift"],
-        "l",
-        lazy.layout.shuffle_right(),
-        desc="Move window to the right",
-    ),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
-    # Grow windows. If current window is on the edge of screen and direction
-    # will be to screen edge - window would shrink.
-    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key(
-        [mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"
-    ),
-    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-    # Toggle floating for active window.
-    Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="toggle floating"),
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key(
-        [mod, "shift"],
-        "Return",
-        lazy.layout.toggle_split(),
-        desc="Toggle between split and unsplit sides of stack",
-    ),
-    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key(
-        [mod],
-        "space",
-        lazy.spawn(f"rofi -theme ~/.config/rofi/themes/{theme_name} -show drun"),
-        desc="Open rofi as app menu.",
-    ),
-    Key(
-        [mod],
-        "f",
-        lazy.spawn(
-            f"fd --follow --exclude=.git --hidden | rofi -theme ~/.config/rofi/themes/{theme_name}\
-                    -show file-browser-extended -file-browser-disable-status -file-browser-stdin",
-            shell=True,
-        ),
-        desc="Open rofi as file browser menu.",
-    ),
-    Key(
-        [mod],
-        "g",
-        lazy.spawn(
-            f"rofi -theme ~/.config/rofi/themes/{theme_name} -show emoji",
-            shell=True,
-        ),
-        desc="Open rofi as emoji browser menu.",
-    ),
-    Key(
-        [mod],
-        "c",
-        lazy.spawn(
-            f"rofi -theme ~/.config/rofi/themes/{theme_name} -show calc",
-            shell=True,
-        ),
-        desc="Open rofi as calculator.",
-    ),
-    Key(
-        [mod],
-        "n",
-        lazy.spawn(
-            "bash ~/.config/rofi/rofi-network-manager/rofi-network-manager.sh",
-            shell=True,
-        ),
-        desc="Open rofi as calculator.",
-    ),
-    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 5%+")),
-    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 5%-")),
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("pulsemixer  --change-volume +5")),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("pulsemixer  --change-volume -5")),
-    Key([], "XF86AudioMute", lazy.spawn("pulsemixer --toggle-mute")),
-    Key(
-        ["mod1"],
-        "Shift_L",
-        lazy.spawn(f"/usr/bin/bash {user_home}/.config/qtile/scripts/language.sh"),
-    ),
-    # Screenshots
-    Key(
-        [],
-        "Print",
-        lazy.spawn(
-            "/usr/bin/escrotum "
-            + user_home
-            + "/Pictures/Screenshots/screenshot_%d_%m_%Y_%H_%M_%S.png"
-        ),
-        desc="Save screen to screenshots folder",
-    ),
-    # Capture region of screen or app
-    Key(
-        [mod, "shift"],
-        "Print",
-        lazy.spawn(
-            "/usr/bin/escrotum -s "
-            + user_home
-            + "/Pictures/Screenshots/screenshot_%d_%m_%Y_%H_%M_%S.png"
-        ),
-        desc="Capture region of screen or app",
-    ),
-    # Capture region of screen or app to clipboard
-    Key(
-        [mod, "control"],
-        "Print",
-        lazy.spawn(
-            "/usr/bin/escrotum -s -C "
-            + user_home
-            + "/Pictures/Screenshots/screenshot_%d_%m_%Y_%H_%M_%S.png"
-        ),
-        desc="Capture region of screen or app to clipboard",
-    ),
-    Key([mod], "e", lazy.spawn("kitty -e nvim"), desc="Open NeoVim as text editor"),
-]
-
-
-groups = [Group(i) for i in "1234567890"]
-
-for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            Key(
-                [mod],
-                i.name,
-                lazy.group[i.name].toscreen(toggle=False),
-                desc=f"Switch to group {i.name}",
-            ),
-            # mod1 + shift + letter of group = switch to & move focused window to group
-            Key(
-                [mod, "shift"],
-                i.name,
-                lazy.window.togroup(i.name, switch_group=False),
-                desc=f"Switch to & move focused window to group {i.name}",
-            ),
-        ]
-    )
-
 
 layouts = [
     layout.Columns(
@@ -410,20 +246,6 @@ screens = [
     ),
 ]
 
-
-# Drag floating layouts.
-mouse = [
-    Drag(
-        [mod],
-        "Button1",
-        lazy.window.set_position_floating(),
-        start=lazy.window.get_position(),
-    ),
-    Drag(
-        [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
-    ),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
-]
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
