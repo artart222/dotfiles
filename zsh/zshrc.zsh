@@ -25,7 +25,7 @@ source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 DISABLE_UPDATE_PROMPT="true"
 
 # Set history file settings.
-export HISTFILE=$ZDOTDIR/zsh/histfile
+export HISTFILE=$ZDOTDIR/histfile
 HISTSIZE=100000
 SAVEHIST=100000
 
