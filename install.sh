@@ -1,115 +1,129 @@
-install_yay() {
-  sudo pacman -S base-devel git --noconfirm
-  cd /tmp
-  git clone https://aur.archlinux.org/yay.git
-  cd yay
-  makepkg -si
-}
+# Installing some basic packages.
+sudo pacman -S --noconfirm base base-devel linux linux-firmware neovim xclip man lsd tldr unzip wget curl fd bat ripgrep onefetch git swaybg acpi
 
-install_pkg() {
-  LIST_OF_APPS=($(ls "/bin")+$(ls "/usr/bin"))
-  IFS="|"
-  if [[ "${IFS}"${LIST_OF_APPS[*]}"${IFS}" =~ "${IFS}$1${IFS}" ]]; then
-    echo "$1, is installed. Checking next dependency.."
-  else
-    echo $1 "is not installed."
-    echo "Installing" $1
-    yay -S --noconfirm $1
-  fi
-}
+# Installing yay(aur helper).
+cd ~
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd ..
+sudo rm -r yay
 
-config_linker() {
-  ln -s "~/dotfiles/$1" "$XDG_CONFIG_HOME/$1"
-}
+# Cloning my dotfiles.
+git clone https://github.com/artart222/dotfiles
 
-install_yay
+# Installing git.
+ln -sf ~/dotfiles/git/ ~/.config/git
 
-install_pkg "nvidia"
-install_pkg "nvidia-utils"
-install_pkg "lib32-nvidia-utils"
+# Using my pacman.conf file.
+sudo rm /etc/pacman.conf
+sudo ln -sf ~/dotfiles/pacman.conf /etc/pacman.conf
 
-install_pkg "python"
-install_pkg "python-black"
-install_pkg "python-psutil"
-install_pkg "python-pylint"
-install_pkg "python-setuptools"
-install_pkg "cargo"
-install_pkg "npm"
-install_pkg "make"
-install_pkg "colormake"
-install_pkg "g++"
-install_pkg "clang"
-install_pkg "cmake"
-install_pkg "shfmt"
-install_pkg "stylua"
+yay -S --noconfirm neofetch
+ln -sf ~/dotfiles/neofetch/ ~/.config/neofetch
 
-install_pkg "man-db"
-install_pkg "tldr"
-install_pkg "xclip"
-install_pkg "dunst"
-install_pkg "xorg-xinit"
-install_pkg "unzip"
-install_pkg "wget"
-install_pkg "curl"
-install_pkg "lsd"
-install_pkg "fd"
-install_pkg "ripgrep"
-install_pkg "bat"
-install_pkg "checkupdates+aur"
-install_pkg "ranger"
-install_pkg "htop"
-install_pkg "onefetch"
-install_pkg "neofetch"
+# Installing networkmanager.
+yay -S --noconfirm networkmanager
+sudo systemctl start NetworkManager
+sudo systemctl enable NetworkManager
 
-install_pkg "xorg-server"
+# Installing kitty as terminal emulator.
+yay -S --noconfirm kitty
+ln -sf ~/dotfiles/kitty ~/.config/kitty
 
-install_pkg "rofi"
-install_pkg "qtile"
-install_pkg "qtile-extras-git"
-install_pkg "picom-ibhagwan-git"
+# Installing htop as system-monitor.
+yay -S --noconfirm htop
+ln -sf ~/dotfiles/htop ~/.config/htop
 
-install_pkg "pulseaudio"
-install_pkg "pulsemixer"
-install_pkg "brightnessctl"
+# Installing CodeArt as neovim config.
+mkdir programming
+cd programming
+git clone https://github.com/artart222/CodeArt
+ln -sf CodeArt ~/.config/nvim
+cd
 
-install_pkg "ttf-dejavu"
-install_pkg "ttf-liberation"
-install_pkg "nerd-fonts-jetbrains-mono"
-install_pkg "noto-fonts-emoji"
-install_pkg "noto-color-emoji-fontconfig"
+# Installing web browser.
+yay -S firefox --noconfirm
 
-install_pkg "firefox"
-install_pkg "kitty"
-install_pkg "virtualbox-host-modules-arch"
-install_pkg "virtualbox-ext-oracle"
-install_pkg "virtualbox-guest-iso"
-install_pkg "discord"
-install_pkg "skypeforlinux-stable-bin"
-install_pkg "dropbox"
+# Installing hyprland as wm.
+yay -S hyprland --noconfirm
+ln -sf ~/dotfiles/hypr/ ~/.config/hypr/
 
-install_pkg "zsh"
-install_pkg "zsh-autosuggestions"
-install_pkg "zsh-syntax-highlighting"
-install_pkg "zsh-theme-powerlevel10k"
-install_pkg "zsh-z-git"
+# Installing widget system(using for top bar and etc...).
+yay -S eww-wayland --noconfirm
+ln -sf ~/dotfiles/eww ~/.config/eww
 
-cd "/home/artin/"
-ln -s "/home/artin/dotfiles/zsh/zshenv.zsh" "/home/artin/.zshenv"
-ln -s "/home/artin/dotfiles/zsh/" "~/.config/zsh"
-chsh -s "/usr/bin/zsh"
-zsh
+# Installing rofi as app launcher.
+yay -S --noconfirm rofi
+ln -sf ~/dotfiles/rofi ~/.config/rofi
 
-config_linker "kitty"
-config_linker "git"
-config_linker "neofetch"
-config_linker "htop"
-config_linker "picom"
-config_linker "ranger"
-config_linker "rofi"
-config_linker "python"
+# Installing some fonts!
+yay -S --noconfirm ttf-jetbrains-mono-nerd ttf-dejavu ttf-liberation noto-fonts-emoji noto-color-emoji-fontconfig
 
-ln -s "~/dotfiles/xinitrc" "~/.xinitrc"
-sudo rm "/etc/pacman.conf"
-sudo ln -s "~/dotfiles/pacman.conf" "/etc/pacman.conf"
-sudo rm "/etc/locale-gen"
-sudo ln -s "~/dotfiles/locale-gen" "/etc/locale-gen"
+# Installing jq(it's a json parser and I used it in dotfiles alot).
+yay -S jq --noconfirm
+
+# Installing zsh.
+yay -S --noconfirm zsh zsh-completions
+ln -sf ~/dotfiles/zsh ~/.config/zsh
+ln -sf dotfiles/zsh/zshenv.zsh ~/.zshenv
+chsh -s /usr/bin/zsh
+sudo chsh -s /usr/bin/zsh
+
+# zsh theme.
+# TODO: Consider using other themes as well!
+yay -S --noconfirm zsh-theme-powerlevel10k
+
+# Some zsh plugins.
+yay -S --noconfirm zsh-z
+yay -S --noconfirm zsh-syntax-highlighting
+yay -S --noconfirm zsh-autosuggestions
+
+# A command-line fuzzy finder.
+yay -S --noconfirm fzf
+
+# A colorful make!
+yay -S --noconfirm colormake
+
+# Installing nvidia drivers
+yay -S --noconfirm nvidia nvidia-utils lib32-nvidia-utils
+
+# Fixing some problems with gpu by using custome mkinitcpio file.
+sudo rm /etc/mkinitcpio.conf
+sudo ln -sf ~/dotfiles/mkinitcpio.conf /etc/mkinitcpio.conf
+sudo mkinitcpio -P
+
+# Installing virtualbox.
+yay -S --noconfirm virtualbox-host-modules-arch virtualbox-ext-oracle virtualbox-guest-iso
+
+# Installing some python related packages.
+yay -S --noconfirm python-pylint python-black
+ln -sf ~/dotfiles/python ~/.config/python
+
+# Installing ranger as file manager.
+yay -S --noconfirm ranger
+ln -sf ~/dotfiles/ranger/ ~/.config/ranger
+
+# Installing tmux.
+yay -S --noconfirm tmux
+ln -sf ~/dotfiles/tmux ~/.config/tmux
+
+# Installing some rust related packages.
+yay -S --noconfirm rustup
+yay -S --noconfirm cargo
+
+# Some other packages
+yay -S --noconfirm npm cmake shfmt stylua clang
+#https://aur.archlinux.org/packages/dropbox#comment-676597
+sudo gpg --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
+yay -S --noconfirm discord dropbox
+yay -S --noconfirm dunst
+yay -S --noconfirm pulseaudio pulsemixer
+yay -S --noconfirm brightnessctl
+
+git clone https://github.com/artart222/wallpapers Pictures/wallpapers
+
+# Setting up bluetooth
+yay -S --noconfirm bluez bluez-utils
+sudo systemctl enable bluetooth
+sudo systemctl start bluetooth
