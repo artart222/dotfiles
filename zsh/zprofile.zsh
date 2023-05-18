@@ -1,3 +1,4 @@
-if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -le 3 ]; then
-  exec startx
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+  unset DISPLAY
+  exec Hyprland
 fi
