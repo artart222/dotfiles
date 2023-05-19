@@ -1,6 +1,9 @@
 # Installing some basic packages.
 sudo pacman -S --noconfirm base base-devel linux linux-firmware neovim xclip man lsd tldr unzip wget curl fd bat ripgrep onefetch git swaybg acpi
 
+# Use git config
+ln -sf ~/dotfiles/git ~/.config/git
+
 # Installing yay(aur helper).
 cd ~
 git clone https://aur.archlinux.org/yay.git
