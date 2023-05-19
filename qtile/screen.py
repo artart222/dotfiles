@@ -76,8 +76,8 @@ def bar_generator(
             # Updates
             widget.CheckUpdates(
                 **widget_settings,
-                display_format=" {updates} updates",
-                no_update_string=" 0 updates",
+                display_format=" {updates} updates",
+                no_update_string=" 0 updates",
                 update_interval=60,
                 custom_command="checkupdates",
                 colour_no_updates=colors["green"],
@@ -124,7 +124,7 @@ def bar_generator(
             ),
             widget.Memory(
                 **widget_settings,
-                format="{MemUsed: .0f}{mm}M",
+                format="󰍛{MemUsed: .0f}{mm}M",
                 foreground=colors["cyan"],
                 mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("kitty -e htop")},
             ),
@@ -177,6 +177,7 @@ def bar_generator(
             widget.Spacer(length=8),
             widget.TextBox(
                 **widget_settings,
+                # TODO: Check what is this icon
                 fmt="",
                 decorations=[
                     RectDecoration(

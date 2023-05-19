@@ -100,50 +100,50 @@ def set_battery_icon():
 
     if is_pluged:
         if percent == 100:
-            icon = ""
+            icon = "󰂅"
         elif 89 < percent < 100:
-            icon = ""
+            icon = "󰂋"
         elif 79 < percent < 90:
-            icon = ""
+            icon = "󰂊"
         elif 69 < percent < 80:
-            icon = ""
+            icon = "󰢞"
         elif 59 < percent < 70:
-            icon = ""
+            icon = "󰂉"
         elif 49 < percent < 60:
-            icon = ""
+            icon = "󰢝"
         elif 39 < percent < 50:
-            icon = ""
+            icon = "󰂈"
         elif 29 < percent < 40:
-            icon = ""
+            icon = "󰂇"
         elif 19 < percent < 30:
-            icon = ""
+            icon = "󰂆"
         elif 9 < percent < 20:
-            icon = ""
+            icon = "󰢜"
         elif 0 <= percent < 10:
-            icon = ""
+            icon = "󰢟"
     else:
         if percent == 100:
-            icon = ""
+            icon = "󰁹"
         elif 89 < percent < 100:
-            icon = ""
+            icon = "󰂂"
         elif 79 < percent < 90:
-            icon = ""
+            icon = "󰂁"
         elif 69 < percent < 80:
-            icon = ""
+            icon = "󰂀"
         elif 59 < percent < 70:
-            icon = ""
+            icon = "󰁿"
         elif 49 < percent < 60:
-            icon = ""
+            icon = "󰁾"
         elif 39 < percent < 50:
-            icon = ""
+            icon = "󰁽"
         elif 29 < percent < 40:
-            icon = ""
+            icon = "󰁼"
         elif 19 < percent < 30:
-            icon = ""
+            icon = "󰁻"
         elif 9 < percent < 20:
-            icon = ""
+            icon = "󰁺"
         elif 0 <= percent < 10:
-            icon = ""
+            icon = "󱃍"
     return icon + " " + str(percent)
 
 
@@ -156,7 +156,7 @@ def get_brightness_level():
     result = str(result)
     result = result.strip()
 
-    return " " + result
+    return "󰃞 " + result
 
 
 def find_language():

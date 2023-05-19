@@ -7,7 +7,7 @@ configuration {
     hide-scrollbar: true;
     display-run: "   Run ";
     display-drun: "   Apps ";
-    display-emoji: "  Emoji ";
+    display-emoji: " 󰇵 Emoji ";
     display-calc: "  Calculator ";
     display-file-browser-extended: "  File Browser";
     sidebar-mode: true;
