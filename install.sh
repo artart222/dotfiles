@@ -1,9 +1,6 @@
 # Installing some basic packages.
 sudo pacman -S --noconfirm base base-devel linux linux-firmware neovim xclip man lsd tldr unzip wget curl fd bat ripgrep onefetch git swaybg acpi
 
-# Use git config
-ln -sf ~/dotfiles/git ~/.config/git
-
 # Installing yay(aur helper).
 cd ~
 git clone https://aur.archlinux.org/yay.git
@@ -15,8 +12,12 @@ sudo rm -r yay
 # Cloning my dotfiles.
 git clone https://github.com/artart222/dotfiles
 
-# Installing git.
-ln -sf ~/dotfiles/git/ ~/.config/git
+# Using my git config.
+ln -sf ~/dotfiles/git ~/.config/git
+
+# Installing delta.
+# A syntax-highlighting pager for git, diff, and grep output
+yay -S git-delta
 
 # Using my pacman.conf file.
 sudo rm /etc/pacman.conf
