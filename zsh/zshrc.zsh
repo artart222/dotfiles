@@ -80,3 +80,9 @@ man() {
     LESS_TERMCAP_ue=$'\e[0m' \
     command man "$@"
 }
+
+PROXY_FILE_ADDR=$HOME/proxy.txt
+if [[ -f ~/proxy.txt ]]; then
+  export https_proxy=$(bat -p $PROXY_FILE_ADDR)
+  export http_proxy=$(bat -p $PROXY_FILE_ADDR)
+fi
