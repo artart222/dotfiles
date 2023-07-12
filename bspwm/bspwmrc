@@ -1,25 +1,21 @@
-#! /bin/sh
-
-grep -x sxhkd > /dev/null || sxhkd &
+#!/usr/bin/env bash
 
 bash ~/dotfiles/scripts/display.sh
 
-bspc config border_width          2
-bspc config window_gap            12
+bspc config border_width 2
+bspc config window_gap 12
 
-bspc config split_ratio           0.52
-bspc config borderless_monocle    true
-bspc config gapless_monocle       true
+bspc config split_ratio 0.52
+bspc config borderless_monocle true
+bspc config gapless_monocle true
 bspc config focus_follows_pointer true
 
 bspc rule -a discord desktop=10 follow=off state=tiled
-bspc rule -a Skype desktop=10 follow=off state=tiled
-bspc rule -a droidcam desktop=10 follow=off state=tiled
 bspc rule -a Spotify desktop=10 follow=off state=tiled
 
-sxhkd&
-picom&
-feh --bg-scale --random --no-fehbg ~/Pictures/wallpapers&
+sxhkd &
+picom &
+feh --bg-scale --random ~/Pictures/wallpapers
 bash ~/.config/polybar/launch.sh --forest
 bash ~/dotfiles/scripts/layout-startup.sh
-setxkbmap -option grp:alt_shift_toggle us,ir,de &
+setxkbmap -option grp:alt_shift_toggle us,ir,de
