@@ -1,4 +1,4 @@
+# autostart windows manager
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-  unset DISPLAY
-  exec Hyprland
+  startx
 fi
