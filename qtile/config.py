@@ -106,9 +106,9 @@ def set_battery_icon():
     icon = ""
 
     if is_pluged:
-        icon = charging_icons[math.floor(percent / 10) - 1]
+        icon = charging_icons[math.floor(percent / 10)]
     else:
-        icon = decharging_icons[math.floor(percent / 10) - 1]
+        icon = decharging_icons[math.floor(percent / 10)]
 
     return icon + " " + str(percent)
 
