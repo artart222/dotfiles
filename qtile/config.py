@@ -52,10 +52,11 @@ SOFTWARE.
 ╰──────────────────────────────────────────────────────────────────────────────────────╯
 """
 
-import subprocess
+import subprocess as sp
 import os
 from typing import List
 import random
+import math
 import psutil
 
 from libqtile import layout
@@ -79,7 +80,11 @@ def autostart():
         ["discord"],
     ]
     for process in processes:
-        subprocess.Popen(process)
+        sp.Popen(process)
+    # FIXME: Will restart qtile.
+    # for process in processes:
+    #     with sp.Popen(process):
+    #         pass
 
 
 @hook.subscribe.client_new
@@ -96,62 +101,22 @@ def set_battery_icon():
     battery = psutil.sensors_battery()
     percent = int(battery.percent)
     is_pluged = battery.power_plugged
+    charging_icons = ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]
+    decharging_icons = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     icon = ""
 
     if is_pluged:
-        if percent == 100:
-            icon = "󰂅"
-        elif 89 < percent < 100:
-            icon = "󰂋"
-        elif 79 < percent < 90:
-            icon = "󰂊"
-        elif 69 < percent < 80:
-            icon = "󰢞"
-        elif 59 < percent < 70:
-            icon = "󰂉"
-        elif 49 < percent < 60:
-            icon = "󰢝"
-        elif 39 < percent < 50:
-            icon = "󰂈"
-        elif 29 < percent < 40:
-            icon = "󰂇"
-        elif 19 < percent < 30:
-            icon = "󰂆"
-        elif 9 < percent < 20:
-            icon = "󰢜"
-        elif 0 <= percent < 10:
-            icon = "󰢟"
+        icon = charging_icons[math.floor(percent / 10) - 1]
     else:
-        if percent == 100:
-            icon = "󰁹"
-        elif 89 < percent < 100:
-            icon = "󰂂"
-        elif 79 < percent < 90:
-            icon = "󰂁"
-        elif 69 < percent < 80:
-            icon = "󰂀"
-        elif 59 < percent < 70:
-            icon = "󰁿"
-        elif 49 < percent < 60:
-            icon = "󰁾"
-        elif 39 < percent < 50:
-            icon = "󰁽"
-        elif 29 < percent < 40:
-            icon = "󰁼"
-        elif 19 < percent < 30:
-            icon = "󰁻"
-        elif 9 < percent < 20:
-            icon = "󰁺"
-        elif 0 <= percent < 10:
-            icon = "󱃍"
+        icon = decharging_icons[math.floor(percent / 10) - 1]
+
     return icon + " " + str(percent)
 
 
 def get_brightness_level():
     """Finding brightness level of laptop display"""
-    result = subprocess.run(["brightnessctl", "g"], stdout=subprocess.PIPE, check=True)
-    result = result.stdout.decode("utf-8")
-    result = int(result)
+    result = sp.run(["brightnessctl", "g"], stdout=sp.PIPE, check=True)
+    result = int(result.stdout.decode("utf-8"))
     result = round((100 * result) / 255)
     result = str(result)
     result = result.strip()
@@ -161,7 +126,7 @@ def get_brightness_level():
 
 def find_language():
     """Finding system keyboard language"""
-    result = subprocess.run(
+    result = sp.run(
         "setxkbmap -query | grep \"layout:\\s\" | awk '{print $2}'",
         capture_output=True,
         shell=True,
@@ -175,7 +140,8 @@ def find_language():
 
 
 def find_network_name():
-    result = subprocess.run(
+    """Finding network name"""
+    result = sp.run(
         "nmcli device status | grep \"\\bconnected\" | cut -d' ' -f22-",
         capture_output=True,
         shell=True,
@@ -213,11 +179,11 @@ wallpapers_list.remove("README.md")
 wallpapers_list.remove(".git")
 
 
-widget_defaults = dict(
-    font="JetBrainsMono Nerd Font",
-    fontsize=14,
-    padding=8,
-)
+widget_defaults = {
+    "font": "JetBrainsMono Nerd Font",
+    "fontsize": 14,
+    "padding": 8,
+}
 
 screens = [
     Screen(

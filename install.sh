@@ -1,16 +1,25 @@
+#!/usr/bin/env bash
+
 # Installing some basic packages.
 sudo pacman -S --noconfirm base base-devel linux linux-firmware neovim xclip man lsd tldr unzip wget curl fd bat ripgrep onefetch git swaybg acpi
 
 # Installing yay(aur helper).
-cd ~
+cd ~ || echo "There was an error. Exiting script" || return
 git clone https://aur.archlinux.org/yay.git
-cd yay
+cd yay || echo "There was an error. Exiting script" || return
 makepkg -si --noconfirm
 cd ..
 sudo rm -r yay
 
 # Cloning my dotfiles.
 git clone https://github.com/artart222/dotfiles
+
+# Installing xdg-user-dirs.
+yay -S --noconfirm xdg-user-dirs
+ln -sf ~/dotfiles/user-dirs.dirs ~/.config/user-dirs.dirs
+
+# Installing android stuff
+yay -S --noconfirm android-tools android-udev
 
 # Using my git config.
 ln -sf ~/dotfiles/git ~/.config/git
@@ -41,10 +50,14 @@ ln -sf ~/dotfiles/htop ~/.config/htop
 
 # Installing CodeArt as neovim config.
 mkdir programming
-cd programming
+cd programming || echo "There was an error. Exiting script" || return
 git clone https://github.com/artart222/CodeArt
 ln -sf CodeArt ~/.config/nvim
-cd
+
+# Installing doomemacs
+# TODO: complete this.
+
+cd ~ || echo "There was an error. Exiting script" || return
 
 # Installing web browser.
 yay -S firefox --noconfirm
@@ -101,7 +114,7 @@ sudo mkinitcpio -P
 yay -S --noconfirm virtualbox-host-modules-arch virtualbox-ext-oracle virtualbox-guest-iso
 
 # Installing some python related packages.
-yay -S --noconfirm python-pylint python-black
+yay -S --noconfirm python-pylint python-black python-lsp-server python-debugpy
 ln -sf ~/dotfiles/python ~/.config/python
 
 # Installing ranger as file manager.
@@ -115,9 +128,15 @@ ln -sf ~/dotfiles/tmux ~/.config/tmux
 # Installing some rust related packages.
 yay -S --noconfirm rustup
 yay -S --noconfirm cargo
+yay -S --noconfirm rust-analyzer
+yay -S --noconfirm taplo
+
+yay -S --noconfirm lua stylua lua-language-server
+
+yay -S --noconfirm shellcheck bash-language-server shfmt
 
 # Some other packages
-yay -S --noconfirm npm cmake shfmt stylua clang
+yay -S --noconfirm npm cmake clang prettier codelldb-bin
 #https://aur.archlinux.org/packages/dropbox#comment-676597
 sudo gpg --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
 yay -S --noconfirm discord dropbox
@@ -131,3 +150,12 @@ git clone https://github.com/artart222/wallpapers Pictures/wallpapers
 yay -S --noconfirm bluez bluez-utils
 sudo systemctl enable bluetooth
 sudo systemctl start bluetooth
+
+# TODO: Complete this.
+# Installing some stuff for my asus rog device.
+# yay -S --noconfirm asusctl
+
+# Installing hp printer
+yay -S --noconfirm cups hplip
+sudo systemctl enable --now cups
+sudo hp-setup -i

@@ -1,7 +1,7 @@
 # Set apps config location environmental variables
 GIT_CONFIG=$XDG_CONFIG_HOME/git/config
 GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
-XAUTHORITY="$XDG_CONFIG_HOME"/Xauthority
+# XAUTHORITY="$XDG_CONFIG_HOME"/Xauthority
 KDEHOME=$XDG_CONFIG_HOME/kde
 PYTHONSTARTUP=$XDG_CONFIG_HOME/python/pythonrc
 LESSHISTFILE=$XDG_CONFIG_HOME/less/lesshst
@@ -16,6 +16,9 @@ export LESSOPEN="| /usr/bin/source-highlight-esc.sh %s"
 # Add some items to path
 PATH="$PATH:$HOME/go/bin"
 PATH="$PATH:$HOME/.cargo/bin"
+PATH="$PATH:$HOME/.local/share/nvim/mason/bin/"
+
+# export PYTHONPATH=/home/artin/.local/share/nvim/mason/packages/:$PYTHONPATH
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 source "$XDG_CACHE_HOME/p10k-instant-prompt-$USER.zsh"
@@ -81,8 +84,11 @@ man() {
     command man "$@"
 }
 
-PROXY_FILE_ADDR=$HOME/proxy.txt
-if [[ -f ~/proxy.txt ]]; then
-  export https_proxy=$(bat -p $PROXY_FILE_ADDR)
-  export http_proxy=$(bat -p $PROXY_FILE_ADDR)
-fi
+# PROXY_FILE_ADDR=$HOME/proxy.txt
+# if [[ -f ~/proxy.txt ]]; then
+  # If I'm connected to my galaxy s23+
+  # if [[ $(nmcli -t -f name,device connection show --active | grep wlp3s0 | cut -d\: -f1) == "Artin's Galaxy S23+" ]]; then
+    # export https_proxy=$(bat -p $PROXY_FILE_ADDR)
+    # export http_proxy=$(bat -p $PROXY_FILE_ADDR)
+  # fi
+# fi
